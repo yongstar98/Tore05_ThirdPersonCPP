@@ -2,14 +2,15 @@
 
 #include "CoreMinimal.h"
 
-#define CheckNull(p) {if (p == nullptr) return;}
-#define CheckNullResult(p, result) {if (p == nullptr) return result;}
+#define CheckNull(p) { if (p == nullptr) return; }
+#define CheckNullResult(p, result) { if (p == nullptr) return result; }
 
-#define CheckTrue(p) {if (p == true) return;}
-#define CheckTrueResult(p, result) {if (p == true) return result;}
+#define CheckTrue(p) { if (p == true) return; }
+#define CheckTrueResult(p, result) { if (p == true) return result; }
 
-#define CheckFalse(p) {if (p == false) return;}
-#define CheckTrueFalse(p, result) {if (p == false) return result;}
+#define CheckFalse(p) { if (p == false) return; }
+#define CheckFalseResult(p, result) { if (p == false) return result; }
+
 
 class THIRDPERSONCPP_API CHelpers
 {
@@ -17,8 +18,8 @@ public:
 	template<typename T>
 	static void GetAsset(T** OutAsset, FString InPath)
 	{
-		ConstructorHelpers::FObjectFinder<USkeletalMesh> Asset(*InPath);
-		ensureMsgf(Asset.Succeeded(), TEXT("Asset Mot Found"));
+		ConstructorHelpers::FObjectFinder<T> Asset(*InPath);
+		ensureMsgf(Asset.Succeeded(), TEXT("Asset Not Found"));
 
 		*OutAsset = Asset.Object;
 	}
@@ -36,13 +37,19 @@ public:
 	static void CreateSceneComponent(AActor* InActor, T** OutComponent, FName InName, USceneComponent* InParent = nullptr)
 	{
 		*OutComponent = InActor->CreateDefaultSubobject<T>(InName);
-
+		
 		if (InParent)
 		{
 			(*OutComponent)->SetupAttachment(InParent);
 			return;
 		}
-
+		
 		InActor->SetRootComponent(*OutComponent);
+	}
+
+	template<typename T>
+	static void CreateActorComponent(AActor* InActor, T** OutComponent, FName InName)
+	{
+		*OutComponent = InActor->CreateDefaultSubobject<T>(InName);
 	}
 };

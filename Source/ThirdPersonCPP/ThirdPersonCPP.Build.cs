@@ -1,5 +1,3 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 using UnrealBuildTool;
 
 public class ThirdPersonCPP : ModuleRules
@@ -9,9 +7,7 @@ public class ThirdPersonCPP : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
 		PublicIncludePaths.Add(ModuleDirectory);
+
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
-
-		
-
 	}
 }

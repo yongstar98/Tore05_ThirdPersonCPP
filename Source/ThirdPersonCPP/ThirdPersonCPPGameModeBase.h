@@ -4,7 +4,6 @@
 #include "GameFramework/GameModeBase.h"
 #include "ThirdPersonCPPGameModeBase.generated.h"
 
-
 UCLASS()
 class THIRDPERSONCPP_API AThirdPersonCPPGameModeBase : public AGameModeBase
 {
@@ -12,4 +11,5 @@ class THIRDPERSONCPP_API AThirdPersonCPPGameModeBase : public AGameModeBase
 
 public:
 	AThirdPersonCPPGameModeBase();
+	
 };
