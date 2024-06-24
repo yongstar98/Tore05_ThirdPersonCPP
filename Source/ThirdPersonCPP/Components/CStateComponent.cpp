@@ -32,7 +32,7 @@ void UCStateComponent::ChangeType(EStateType InNewType)
 {
 	if (OnStateTypeChanged.IsBound())
 	{
-		//Todo. 
+		
 		EStateType Prev = Type;
 		Type = InNewType;
 
