@@ -4,11 +4,12 @@
 #include "Components/ActorComponent.h"
 #include "CActionComponent.generated.h"
 
+class UCActionData;
 
 UENUM(BlueprintType)
 enum class EActionType : uint8
 {
-	Unarmes, Fist, OneHand, TwoHand, MagicBall, Warp, Whirlwind, Max
+	Unarmed, Fist, OneHand, TwoHand, MagicBall, Warp, Whirlwind, Max
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FActionTypeChanged, EActionType, InPrevType, EActionType, InNewType);
@@ -27,7 +28,7 @@ protected:
 
 public:
 	UFUNCTION(BlueprintPure)
-	FORCEINLINE bool IsUnaremdMode() { return Type == EActionType::Unaremd; }
+	FORCEINLINE bool IsUnaremdMode() { return Type == EActionType::Unarmed; }
 
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE bool IsFistMode() { return Type == EActionType::Fist; }
@@ -45,7 +46,7 @@ public:
 	FORCEINLINE bool IsWarpMode() { return Type == EActionType::Warp; }
 
 	UFUNCTION(BlueprintPure)
-	FORCEINLINE bool Is WhirlwindMode() { return Type == EActionType::Whirlwind; }
+	FORCEINLINE bool IsWhirlwindMode() { return Type == EActionType::Whirlwind; }
 
 public:
 	void SetUnaremdMode();
@@ -62,8 +63,12 @@ private:
 
 public:
 	UPROPERTY(BlueprintAssignable)
-	FActionTypeChanged OnActionTypeChanged;
+		FActionTypeChanged OnActionTypeChanged;
 
 private:
-	EActionTyoe Type;
+	UPROPERTY(EditDefaultsOnly, Category = "DataAsset")
+		UCActionData* DataAssets[(int32)EActionType::Max];
+
+private:
+	EActionType Type;
 };
