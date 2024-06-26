@@ -26,7 +26,13 @@ protected:
 	virtual void BeginPlay() override;
 		
 
+
+
+
 public:
+	UFUNCTION(BlueprintPure)
+		FORCEINLINE UCActionData* GetCurrentActionData() { return DataAssets[(int32)Type]; }
+
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE bool IsUnaremdMode() { return Type == EActionType::Unarmed; }
 
@@ -71,4 +77,6 @@ private:
 
 private:
 	EActionType Type;
+
+
 };
