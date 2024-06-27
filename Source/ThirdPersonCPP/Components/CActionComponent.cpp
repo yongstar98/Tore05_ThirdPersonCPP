@@ -3,11 +3,10 @@
 #include "GameFramework/Character.h"
 #include "Actions/CActionData.h"
 #include "Actions/CEquipment.h"
-
+#include "Actions/CDoAction.h"
 
 UCActionComponent::UCActionComponent()
 {
-	PrimaryComponentTick.bCanEverTick = true;
 
 }
 
@@ -28,18 +27,28 @@ void UCActionComponent::BeginPlay()
 	}
 }
 
+void UCActionComponent::DoAction()
+{
+	CheckTrue(IsUnaremdMode());
+
+	if (DataAssets[(int32)Type] && DataAssets[(int32)Type]->GetDoAction())
+	{
+		ACDoAction* DoAction = DataAssets[(int32)Type]->GetDoAction();
+		DoAction->DoAction();
+	}
+}
 
 void UCActionComponent::SetUnaremdMode()
 {
 	if (DataAssets[(int32)Type] && DataAssets[(int32)Type]->GetEquipment())
-	DataAssets[(int32)Type]->GetEquipment()->Unequip();
+		DataAssets[(int32)Type]->GetEquipment()->Unequip();
 
 	DataAssets[(int32)EActionType::Unarmed]->GetEquipment()->Equip();
 
 	ChangeType(EActionType::Unarmed);
 }
 
-void UCActionComponent::SetFistMode() 
+void UCActionComponent::SetFistMode()
 {
 	SetMode(EActionType::Fist);
 }
@@ -80,11 +89,12 @@ void UCActionComponent::SetMode(EActionType InNewType)
 	else if (IsUnaremdMode() == false)
 	{
 		if (DataAssets[(int32)Type] && DataAssets[(int32)Type]->GetEquipment())
-		DataAssets[(int32)Type]->GetEquipment()->Unequip();
+			DataAssets[(int32)Type]->GetEquipment()->Unequip();
 	}
 
 	if (DataAssets[(int32)InNewType] && DataAssets[(int32)InNewType]->GetEquipment())
 		DataAssets[(int32)InNewType]->GetEquipment()->Equip();
+
 
 	ChangeType(InNewType);
 }
@@ -99,3 +109,4 @@ void UCActionComponent::ChangeType(EActionType InNewType)
 		OnActionTypeChanged.Broadcast(Prev, InNewType);
 	}
 }
+

@@ -26,7 +26,8 @@ protected:
 	virtual void BeginPlay() override;
 		
 
-
+public:
+	void DoAction();
 
 
 public:

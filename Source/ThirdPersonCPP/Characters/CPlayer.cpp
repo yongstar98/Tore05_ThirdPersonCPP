@@ -36,22 +36,22 @@ ACPlayer::ACPlayer()
 	CHelpers::GetAsset(&MeshAsset, "/Game/Character/Mesh/SK_Mannequin");
 	GetMesh()->SetSkeletalMesh(MeshAsset);
 
-TSubclassOf<UAnimInstance> AnimInstanceClass;
-CHelpers::GetClass<UAnimInstance>(&AnimInstanceClass, "/Game/Player/ABP_CPlayer");
-GetMesh()->SetAnimInstanceClass(AnimInstanceClass);
+	TSubclassOf<UAnimInstance> AnimInstanceClass;
+	CHelpers::GetClass<UAnimInstance>(&AnimInstanceClass, "/Game/Player/ABP_CPlayer");
+	GetMesh()->SetAnimInstanceClass(AnimInstanceClass);
 
-//-> SpringArmComp
-SpringArmComp->SetRelativeLocation(FVector(0, 0, 140));
-SpringArmComp->SetRelativeRotation(FRotator(0, 90, 0));
-SpringArmComp->TargetArmLength = 200.0f;
-SpringArmComp->bUsePawnControlRotation = true;
-SpringArmComp->bEnableCameraLag = true;
+	//-> SpringArmComp
+	SpringArmComp->SetRelativeLocation(FVector(0, 0, 140));
+	SpringArmComp->SetRelativeRotation(FRotator(0, 90, 0));
+	SpringArmComp->TargetArmLength = 200.0f;
+	SpringArmComp->bUsePawnControlRotation = true;
+	SpringArmComp->bEnableCameraLag = true;
 
-//-> Movmement
-bUseControllerRotationYaw = false;
-GetCharacterMovement()->MaxWalkSpeed = AttributeComp->GetSprintSpeed();
-GetCharacterMovement()->bOrientRotationToMovement = true;
-GetCharacterMovement()->RotationRate = FRotator(0, 720, 0);
+	//-> Movmement
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->MaxWalkSpeed = AttributeComp->GetSprintSpeed();
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0, 720, 0);
 }
 
 void ACPlayer::BeginPlay()
@@ -105,6 +105,8 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Fist", EInputEvent::IE_Pressed, this, &ACPlayer::OnFist);
 	PlayerInputComponent->BindAction("OneHand", EInputEvent::IE_Pressed, this, &ACPlayer::OnOneHand);
 	PlayerInputComponent->BindAction("TwoHand", EInputEvent::IE_Pressed, this, &ACPlayer::OnTwoHand);
+
+	PlayerInputComponent->BindAction("PrimaryAction", EInputEvent::IE_Pressed, this, &ACPlayer::OnPrimaryAction);
 }
 
 void ACPlayer::OnMoveForward(float Axis)
@@ -169,6 +171,7 @@ void ACPlayer::OnEvade()
 		StateComp->SetBackstepMode();
 		return;
 	}
+
 	StateComp->SetRollMode();
 }
 
@@ -193,6 +196,10 @@ void ACPlayer::OnTwoHand()
 	ActionComp->SetTwoHandMode();
 }
 
+void ACPlayer::OnPrimaryAction()
+{
+	ActionComp->DoAction();
+}
 
 void ACPlayer::Begin_Roll()
 {
@@ -210,7 +217,6 @@ void ACPlayer::Begin_Roll()
 	{
 		Target = Start + GetVelocity().GetSafeNormal2D();
 	}
-
 
 	FRotator ForceRotation = UKismetMathLibrary::FindLookAtRotation(Start, Target);
 	SetActorRotation(ForceRotation);
@@ -235,7 +241,6 @@ void ACPlayer::End_Roll()
 	}
 
 	StateComp->SetIdleMode();
-
 }
 
 void ACPlayer::End_Backstep()
@@ -246,28 +251,25 @@ void ACPlayer::End_Backstep()
 		bUseControllerRotationYaw = false;
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 	}
+
 	StateComp->SetIdleMode();
 }
 
-void ACPlayer::OnStateTypeChaged(EStateType InPrevType, EStateType InNewType)
+void ACPlayer::OnStateTypeChanged(EStateType InPrevType, EStateType InNewType)
 {
 	switch (InNewType)
 	{
-
 	case EStateType::Roll:
 	{
 		Begin_Roll();
 	}
-		break;
+	break;
 
 	case EStateType::Backstep:
 	{
 		Begin_Backstep();
 	}
-		break;
-
-	
+	break;
 	}
 }
-
 

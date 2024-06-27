@@ -1,5 +1,3 @@
-#pragma once
-
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Components/CStateComponent.h"
@@ -31,7 +29,6 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:
-
 	void ChangeBodyColor(FLinearColor InColor) override;
 
 private:
@@ -51,19 +48,20 @@ private:
 	void OnFist();
 	void OnOneHand();
 	void OnTwoHand();
+
+	void OnPrimaryAction();
+
 private:
 	void Begin_Roll();
 	void Begin_Backstep();
 
 public:
-
 	void End_Roll();
 	void End_Backstep();
 
 private:
 	UFUNCTION()
-	void OnStateTypeChaged(EStateType InPrevType, EStateType InNewType);
-
+		void OnStateTypeChanged(EStateType InPrevType, EStateType InNewType);
 
 protected:
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")

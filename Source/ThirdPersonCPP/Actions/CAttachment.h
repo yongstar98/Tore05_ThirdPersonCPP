@@ -19,8 +19,14 @@ protected:
 
 protected:
 	UFUNCTION(BlueprintCallable)
-	void AttachTo(FName InSocketName);
+	void ActorAttachTo(FName InSocketName);
 
+public:
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnEquip();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnUnequip();
 
 private:
 	UPROPERTY(VisibleDefaultsOnly)
