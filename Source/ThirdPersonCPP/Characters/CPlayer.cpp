@@ -9,6 +9,7 @@
 #include "Components/COptionComponent.h"
 #include "Components/CMotagesComponent.h"
 #include "Components/CActionComponent.h"
+
 #include "Actions/CActionData.h"
 
 ACPlayer::ACPlayer()
@@ -52,6 +53,8 @@ ACPlayer::ACPlayer()
 	GetCharacterMovement()->MaxWalkSpeed = AttributeComp->GetSprintSpeed();
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0, 720, 0);
+
+
 }
 
 void ACPlayer::BeginPlay()
@@ -239,6 +242,11 @@ void ACPlayer::End_Roll()
 		bUseControllerRotationYaw = true;
 		GetCharacterMovement()->bOrientRotationToMovement = false;
 	}
+	else if (ActionComp->GetCurrentActionData()->EquipmentData.bLookForward == true)
+	{
+		bUseControllerRotationYaw = true;
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+	}
 
 	StateComp->SetIdleMode();
 }
@@ -251,6 +259,12 @@ void ACPlayer::End_Backstep()
 		bUseControllerRotationYaw = false;
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 	}
+	else if (ActionComp->GetCurrentActionData()->EquipmentData.bLookForward == false)
+	{
+		bUseControllerRotationYaw = false;
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+	}
+
 
 	StateComp->SetIdleMode();
 }
