@@ -7,9 +7,8 @@
 #include "Materials/MaterialInstanceConstant.h"
 #include "Components/CAttributeComponent.h"
 #include "Components/COptionComponent.h"
-#include "Components/CMotagesComponent.h"
+#include "Components/CMontagesComponent.h"
 #include "Components/CActionComponent.h"
-
 #include "Actions/CActionData.h"
 
 ACPlayer::ACPlayer()
@@ -40,7 +39,7 @@ ACPlayer::ACPlayer()
 	TSubclassOf<UAnimInstance> AnimInstanceClass;
 	CHelpers::GetClass<UAnimInstance>(&AnimInstanceClass, "/Game/Player/ABP_CPlayer");
 	GetMesh()->SetAnimInstanceClass(AnimInstanceClass);
-
+	
 	//-> SpringArmComp
 	SpringArmComp->SetRelativeLocation(FVector(0, 0, 140));
 	SpringArmComp->SetRelativeRotation(FRotator(0, 90, 0));
@@ -53,8 +52,6 @@ ACPlayer::ACPlayer()
 	GetCharacterMovement()->MaxWalkSpeed = AttributeComp->GetSprintSpeed();
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0, 720, 0);
-
-
 }
 
 void ACPlayer::BeginPlay()
@@ -75,9 +72,9 @@ void ACPlayer::BeginPlay()
 
 	GetMesh()->SetMaterial(0, BodyMaterial);
 	GetMesh()->SetMaterial(1, LogoMaterial);
+	
 
-
-	ActionComp->SetUnaremdMode();
+	ActionComp->SetUnarmedMode();
 }
 
 void ACPlayer::Tick(float DeltaTime)
@@ -134,7 +131,7 @@ void ACPlayer::OnMoveRight(float Axis)
 
 void ACPlayer::OnTurn(float Axis)
 {
-	float Rate = Axis * OptionComp->GetMouseXRate() * GetWorld()->GetDeltaSeconds();
+	float Rate = Axis* OptionComp->GetMouseXRate()* GetWorld()->GetDeltaSeconds();
 
 	AddControllerYawInput(Rate);
 }
@@ -220,7 +217,7 @@ void ACPlayer::Begin_Roll()
 	{
 		Target = Start + GetVelocity().GetSafeNormal2D();
 	}
-
+	
 	FRotator ForceRotation = UKismetMathLibrary::FindLookAtRotation(Start, Target);
 	SetActorRotation(ForceRotation);
 
@@ -237,10 +234,10 @@ void ACPlayer::Begin_Backstep()
 
 void ACPlayer::End_Roll()
 {
-	if (ActionComp->GetCurrentActionData()->EquipmentData.bLookForward == true)
+	if (ActionComp->GetCurrentActionData() == nullptr)
 	{
-		bUseControllerRotationYaw = true;
-		GetCharacterMovement()->bOrientRotationToMovement = false;
+		bUseControllerRotationYaw = false;
+		GetCharacterMovement()->bOrientRotationToMovement = true;
 	}
 	else if (ActionComp->GetCurrentActionData()->EquipmentData.bLookForward == true)
 	{
@@ -253,18 +250,16 @@ void ACPlayer::End_Roll()
 
 void ACPlayer::End_Backstep()
 {
-
-	if (ActionComp->GetCurrentActionData()->EquipmentData.bLookForward == false)
+	if (ActionComp->GetCurrentActionData() == nullptr)
 	{
-		bUseControllerRotationYaw = false;
-		GetCharacterMovement()->bOrientRotationToMovement = true;
+		bUseControllerRotationYaw = true;
+		GetCharacterMovement()->bOrientRotationToMovement = false;
 	}
 	else if (ActionComp->GetCurrentActionData()->EquipmentData.bLookForward == false)
 	{
 		bUseControllerRotationYaw = false;
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 	}
-
 
 	StateComp->SetIdleMode();
 }
@@ -273,17 +268,17 @@ void ACPlayer::OnStateTypeChanged(EStateType InPrevType, EStateType InNewType)
 {
 	switch (InNewType)
 	{
-	case EStateType::Roll:
-	{
-		Begin_Roll();
-	}
-	break;
-
-	case EStateType::Backstep:
-	{
-		Begin_Backstep();
-	}
-	break;
+		case EStateType::Roll:
+		{
+			Begin_Roll();
+		}
+		break;
+		
+		case EStateType::Backstep:
+		{
+			Begin_Backstep();
+		}
+		break;
 	}
 }
 

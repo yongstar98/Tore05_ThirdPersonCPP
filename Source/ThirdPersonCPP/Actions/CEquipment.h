@@ -16,8 +16,8 @@ UCLASS()
 class THIRDPERSONCPP_API ACEquipment : public AActor
 {
 	GENERATED_BODY()
-
-public:
+	
+public:	
 	ACEquipment();
 
 protected:
@@ -29,34 +29,33 @@ public:
 
 public:
 	UFUNCTION(BlueprintNativeEvent)
-		void Equip();
+	void Equip();
 
 	UFUNCTION(BlueprintNativeEvent)
-		void Begin_Equip();
+	void Begin_Equip();
 
 	UFUNCTION(BlueprintNativeEvent)
-		void End_Equip();
+	void End_Equip();
 
 	UFUNCTION(BlueprintNativeEvent)
-		void Unequip();
+	void Unequip();
 
 public:
 	UPROPERTY(BlueprintAssignable)
-		FEquipmentDelegate OnEquipmentDelegate;
+	FEquipmentDelegate OnEquipmentDelegate;
 
 	UPROPERTY(BlueprintAssignable)
-		FUnequipmentDelegate OnUnequipmentDelegate;
-
+	FUnequipmentDelegate OnUnequipmentDelegate;
 
 protected:
 	UPROPERTY(BlueprintReadOnly)
-		ACharacter* OwnerCharacter;
+	ACharacter* OwnerCharacter;
 
 	UPROPERTY(BlueprintReadOnly)
-		UCStateComponent* StateComp;
+	UCStateComponent* StateComp;
 
 	UPROPERTY(BlueprintReadOnly)
-		UCAttributeComponent* AttributeComp;
+	UCAttributeComponent* AttributeComp;
 
 private:
 	FEquipmentData Data;

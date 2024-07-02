@@ -14,9 +14,8 @@ ACEquipment::ACEquipment()
 void ACEquipment::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	OwnerCharacter = Cast<ACharacter>(GetOwner());
-	CLog::Log(OwnerCharacter->GetName());
 	StateComp = CHelpers::GetComponent<UCStateComponent>(OwnerCharacter);
 	AttributeComp = CHelpers::GetComponent<UCAttributeComponent>(OwnerCharacter);
 }
@@ -83,5 +82,3 @@ void ACEquipment::Unequip_Implementation()
 		OnUnequipmentDelegate.Broadcast();
 	}
 }
-
-

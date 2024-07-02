@@ -3,6 +3,8 @@
 #include "Components/CActionComponent.h"
 #include "Actions/CActionData.h"
 #include "Actions/CAttachment.h"
+#include "Actions/CDoAction_Melee.h"
+
 
 FString UCAnimNotifyState_Collision::GetNotifyName_Implementation() const
 {
@@ -41,4 +43,10 @@ void UCAnimNotifyState_Collision::NotifyEnd(USkeletalMeshComponent* MeshComp, UA
 	CheckNull(Attachment);
 
 	Attachment->OffCollision();
+
+	ACDoAction_Melee* DoAction_Melee = Cast<ACDoAction_Melee>(ActionData->GetDoAction());
+	CheckNull(DoAction_Melee);
+
+
+	DoAction_Melee->ClearHittedCharacters();
 }

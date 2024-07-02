@@ -14,7 +14,7 @@ void ACDoAction::BeginPlay()
 	OwnerCharacter = Cast<ACharacter>(GetOwner());
 	AttributeComp = CHelpers::GetComponent<UCAttributeComponent>(OwnerCharacter);
 	StateComp = CHelpers::GetComponent<UCStateComponent>(OwnerCharacter);
-
+	
 	Super::BeginPlay();
 }
 
@@ -27,7 +27,3 @@ void ACDoAction::SetDatas(const TArray<FDoActionData>& InDatas)
 {
 	Datas = InDatas;
 }
-
-
-
-

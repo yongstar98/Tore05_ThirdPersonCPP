@@ -10,7 +10,7 @@ void UCActionData::BeginPlay(ACharacter* InOwnerCharacter)
 	FTransform Transform;
 
 	if (AttachmentClass)
-	{
+	{	
 		Attachment = InOwnerCharacter->GetWorld()->SpawnActorDeferred<ACAttachment>(AttachmentClass, Transform, InOwnerCharacter);
 		Attachment->SetActorLabel(MakeActorLable(InOwnerCharacter, "Attachment"));
 		Attachment->FinishSpawning(Transform);
@@ -31,7 +31,7 @@ void UCActionData::BeginPlay(ACharacter* InOwnerCharacter)
 		}
 	}
 
-
+	
 	if (DoActionClass)
 	{
 		DoAction = InOwnerCharacter->GetWorld()->SpawnActorDeferred<ACDoAction>(DoActionClass, Transform, InOwnerCharacter);
@@ -39,6 +39,7 @@ void UCActionData::BeginPlay(ACharacter* InOwnerCharacter)
 		DoAction->SetActorLabel(MakeActorLable(InOwnerCharacter, "DoAction"));
 		DoAction->AttachToComponent(InOwnerCharacter->GetMesh(), FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
 		DoAction->FinishSpawning(Transform);
+
 		if (Attachment)
 		{
 			Attachment->OnAttachmentBeginOverlap.AddDynamic(DoAction, &ACDoAction::OnAttachmentBeginOverlap);

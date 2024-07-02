@@ -4,6 +4,8 @@
 #include "Actions/CActionData.h"
 #include "Actions/CEquipment.h"
 #include "Actions/CDoAction.h"
+#include "Actions/CAttachment.h"
+
 
 UCActionComponent::UCActionComponent()
 {
@@ -29,7 +31,7 @@ void UCActionComponent::BeginPlay()
 
 void UCActionComponent::DoAction()
 {
-	CheckTrue(IsUnaremdMode());
+	CheckTrue(IsUnarmedMode());
 
 	if (DataAssets[(int32)Type] && DataAssets[(int32)Type]->GetDoAction())
 	{
@@ -38,13 +40,28 @@ void UCActionComponent::DoAction()
 	}
 }
 
-void UCActionComponent::SetUnaremdMode()
+void UCActionComponent::OffAllCollisions()
+{
+	for (const auto& DataAsset : DataAssets)
+	{
+		if (DataAsset && DataAsset->GetAttachment())
+		{
+			DataAsset->GetAttachment()->OffCollision();
+		}
+	}
+}
+
+void UCActionComponent::SetUnarmedMode()
 {
 	if (DataAssets[(int32)Type] && DataAssets[(int32)Type]->GetEquipment())
+	{
 		DataAssets[(int32)Type]->GetEquipment()->Unequip();
+	}
 
-	DataAssets[(int32)EActionType::Unarmed]->GetEquipment()->Equip();
-
+	if (DataAssets[(int32)EActionType::Unarmed] && DataAssets[(int32)EActionType::Unarmed]->GetEquipment())
+	{
+		DataAssets[(int32)EActionType::Unarmed]->GetEquipment()->Equip();
+	}
 	ChangeType(EActionType::Unarmed);
 }
 
@@ -82,11 +99,11 @@ void UCActionComponent::SetMode(EActionType InNewType)
 {
 	if (Type == InNewType)
 	{
-		SetUnaremdMode();
+		SetUnarmedMode();
 		return;
 	}
 
-	else if (IsUnaremdMode() == false)
+	else if (IsUnarmedMode() == false)
 	{
 		if (DataAssets[(int32)Type] && DataAssets[(int32)Type]->GetEquipment())
 			DataAssets[(int32)Type]->GetEquipment()->Unequip();
@@ -109,4 +126,3 @@ void UCActionComponent::ChangeType(EActionType InNewType)
 		OnActionTypeChanged.Broadcast(Prev, InNewType);
 	}
 }
-

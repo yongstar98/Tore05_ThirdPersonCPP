@@ -24,18 +24,18 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-		
 
 public:
 	void DoAction();
 
+	void OffAllCollisions();
 
 public:
 	UFUNCTION(BlueprintPure)
-		FORCEINLINE UCActionData* GetCurrentActionData() { return DataAssets[(int32)Type]; }
+	FORCEINLINE UCActionData* GetCurrentActionData() { return DataAssets[(int32)Type]; }
 
 	UFUNCTION(BlueprintPure)
-	FORCEINLINE bool IsUnaremdMode() { return Type == EActionType::Unarmed; }
+	FORCEINLINE bool IsUnarmedMode() { return Type == EActionType::Unarmed; }
 
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE bool IsFistMode() { return Type == EActionType::Fist; }
@@ -56,7 +56,7 @@ public:
 	FORCEINLINE bool IsWhirlwindMode() { return Type == EActionType::Whirlwind; }
 
 public:
-	void SetUnaremdMode();
+	void SetUnarmedMode();
 	void SetFistMode();
 	void SetOneHandMode();
 	void SetTwoHandMode();
@@ -70,14 +70,13 @@ private:
 
 public:
 	UPROPERTY(BlueprintAssignable)
-		FActionTypeChanged OnActionTypeChanged;
+	FActionTypeChanged OnActionTypeChanged;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "DataAsset")
-		UCActionData* DataAssets[(int32)EActionType::Max];
+	UCActionData* DataAssets[(int32)EActionType::Max];
 
 private:
 	EActionType Type;
-
 
 };

@@ -8,7 +8,7 @@
 
 class UCAttributeComponent;
 class UCStateComponent;
-class UCMotagesComponent;
+class UCMontagesComponent;
 class UCActionComponent;
 class UWidgetComponent;
 
@@ -35,28 +35,36 @@ private:
 	void Hitted();
 	void Dead();
 
+	UFUNCTION()
+	void ResetLogoColor();
+
 protected:
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-		UCAttributeComponent* AttributeComp;
+	UCAttributeComponent* AttributeComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-		UCStateComponent* StateComp;
+	UCStateComponent* StateComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-		UCMotagesComponent* MontagesComp;
+	UCMontagesComponent* MontagesComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-		UCActionComponent* ActionComp;
+	UCActionComponent* ActionComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-		UWidgetComponent* NameWidgetComp;
+	UWidgetComponent* NameWidgetComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-		UWidgetComponent* HealthWidgetComp;
+	UWidgetComponent* HealthWidgetComp;
+
+	UPROPERTY(EditAnywhere, Category = "Hitted")
+	float LaunchValue;
+
 
 private:
 	UMaterialInstanceDynamic* BodyMaterial;
 	UMaterialInstanceDynamic* LogoMaterial;
 
 	AController* DamageInstigator;
+	float DamageValue;
 };

@@ -13,9 +13,9 @@ class THIRDPERSONCPP_API UCEnemyHealthWidget : public UUserWidget
 
 public:
 	UFUNCTION(BlueprintNativeEvent)
-		void ApplyHealth(float InCurrentHealth, float InMaxHealth);
+	void ApplyHealth(float InCurrentHealth, float InMaxHealth);
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-		UProgressBar* HealthBar;
+	UProgressBar* HealthBar;
 };

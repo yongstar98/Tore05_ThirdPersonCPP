@@ -4,15 +4,19 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInstanceConstant.h"
 #include "Components/WidgetComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/CAttributeComponent.h"
-#include "Components/CMotagesComponent.h"
+#include "Components/CMontagesComponent.h"
 #include "Components/CActionComponent.h"
 #include "Widgets/CEnemyNameWidget.h"
 #include "Widgets/CEnemyHealthWidget.h"
 
-
 ACEnemy::ACEnemy()
 {
+	//Property Setting
+	LaunchValue = 25.f;
+
 	//Create Scene Component
 	CHelpers::CreateSceneComponent(this, &NameWidgetComp, "NameWidgetComp", GetMesh());
 	CHelpers::CreateSceneComponent(this, &HealthWidgetComp, "HealthWidgetComp", GetMesh());
@@ -54,7 +58,6 @@ ACEnemy::ACEnemy()
 	HealthWidgetComp->SetRelativeLocation(FVector(0, 0, 190));
 	HealthWidgetComp->SetDrawSize(FVector2D(120, 15));
 	HealthWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
-
 }
 
 void ACEnemy::BeginPlay()
@@ -72,11 +75,11 @@ void ACEnemy::BeginPlay()
 	GetMesh()->SetMaterial(0, BodyMaterial);
 	GetMesh()->SetMaterial(1, LogoMaterial);
 
-	StateComp->OnStateTypeChanged.AddDynamic(this, ACEnemy::OnStateTypeChanged);
+	StateComp->OnStateTypeChanged.AddDynamic(this, &ACEnemy::OnStateTypeChanged);
 
 	Super::BeginPlay();
 
-	ActionComp->SetUnaremdMode();
+	ActionComp->SetUnarmedMode();
 
 	NameWidgetComp->InitWidget();
 	UCEnemyNameWidget* NameWidgetInstance = Cast<UCEnemyNameWidget>(NameWidgetComp->GetUserWidgetObject());
@@ -85,26 +88,33 @@ void ACEnemy::BeginPlay()
 		NameWidgetInstance->SetName(GetController()->GetName(), GetName());
 	}
 
-
 	HealthWidgetComp->InitWidget();
 	UCEnemyHealthWidget* HealthWidgetInstance = Cast<UCEnemyHealthWidget>(HealthWidgetComp->GetUserWidgetObject());
 	if (HealthWidgetInstance)
 	{
 		HealthWidgetInstance->ApplyHealth(AttributeComp->GetCurrentHealth(), AttributeComp->GetMaxHealth());
 	}
-	
-
 }
 
 void ACEnemy::ChangeBodyColor(FLinearColor InColor)
 {
+	CheckTrue(StateComp->IsDeadMode());
+
+	if (StateComp->IsHittedMode())
+	{
+		LogoMaterial->SetScalarParameterValue("bHitted", 1.f);
+		LogoMaterial->SetVectorParameterValue("LogoEmissive", InColor);
+
+		return;
+	}
+
 	BodyMaterial->SetVectorParameterValue("BodyColor", InColor);
 	LogoMaterial->SetVectorParameterValue("BodyColor", InColor);
 }
 
 float ACEnemy::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	float DamageValue = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+ 	DamageValue = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 	DamageInstigator = EventInstigator;
 	
 	AttributeComp->DecreaseHealth(Damage);
@@ -112,44 +122,78 @@ float ACEnemy::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContro
 	if (AttributeComp->GetCurrentHealth() <= 0.f)
 	{
 		StateComp->SetDeadMode();
-
-		return 0.0f;
+		return 0.f;
 	}
 
 	StateComp->SetHittedMode();
 
-	return 0.0f;
+	return DamageValue;
 }
 
 void ACEnemy::OnStateTypeChanged(EStateType InPrevType, EStateType InNewType)
 {
 	switch (InNewType)
 	{
-	case EStateType::Hitted:
-	{
-		Hitted();
-	}
-	break;
+		case EStateType::Hitted:
+		{
+			Hitted();
+		}
+		break;
 
-	case EStateType::Dead:
-	{
-		Dead();
+		case EStateType::Dead:
+		{
+			Dead();
+		}
+		break;
 	}
-	break;
-	}
-
 }
 
 void ACEnemy::Hitted()
 {
-	HealthWidgetComp->InitWidget();
+	//Apply Healyh Widget
 	UCEnemyHealthWidget* HealthWidgetInstance = Cast<UCEnemyHealthWidget>(HealthWidgetComp->GetUserWidgetObject());
 	if (HealthWidgetInstance)
 	{
 		HealthWidgetInstance->ApplyHealth(AttributeComp->GetCurrentHealth(), AttributeComp->GetMaxHealth());
 	}
+
+	//Play Hitted Montage
+	MontagesComp->PlayHitted();
+
+	//Look At Attack
+	FVector Start = GetActorLocation();
+	FVector Target = DamageInstigator->GetPawn()->GetActorLocation();
+	FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(Start, Target);
+	SetActorRotation(FRotator(0, Rotation.Yaw, 0));
+
+	//Hit Back
+	FVector Direction = Target - Start;
+	Direction.Normalize();
+
+	LaunchCharacter(-Direction * DamageValue * LaunchValue, true, false);
+
+	//Set
+	ChangeBodyColor(FLinearColor(40, 0, 0));
+	UKismetSystemLibrary::K2_SetTimer(this, "ResetLogoColor", 0.5f, false);
 }
 
 void ACEnemy::Dead()
 {
+	// Hidden Widgets
+	NameWidgetComp->SetVisibility(false);
+	HealthWidgetComp->SetVisibility(false);
+
+	//Ragdoll
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetCollisionProfileName("Ragdoll");
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->DisableMovement();
+
+	//Off All Attachemnt Collisions
+	ActionComp->OffAllCollisions();
+}
+
+void ACEnemy::ResetLogoColor()
+{
+	LogoMaterial->SetScalarParameterValue("bHitted", 0.f);
 }

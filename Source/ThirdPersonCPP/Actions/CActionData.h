@@ -19,19 +19,19 @@ struct FEquipmentData
 
 public:
 	UPROPERTY(EditDefaultsOnly)
-		UAnimMontage* AnimMontage;
+	UAnimMontage* AnimMontage;
 
 	UPROPERTY(EditDefaultsOnly)
-		float PlayRate = 1.f;
+	float PlayRate = 1.f;
 
 	UPROPERTY(EditDefaultsOnly)
-		FName StartSection;
+	FName StartSection;
 
 	UPROPERTY(EditDefaultsOnly)
-		bool bCanMove = true;
+	bool bCanMove = true;
 
 	UPROPERTY(EditDefaultsOnly)
-		bool bLookForward = true;
+	bool bLookForward = true;
 };
 
 USTRUCT(BlueprintType)
@@ -41,19 +41,19 @@ struct FDoActionData : public FEquipmentData
 
 public:
 	UPROPERTY(EditDefaultsOnly)
-		float Power = 1.f;
+	float Power = 1.f;
 
 	UPROPERTY(EditDefaultsOnly)
-		float HitStop;
+	float HitStop;
 
 	UPROPERTY(EditDefaultsOnly)
-		UParticleSystem* Effect;
+	UParticleSystem* Effect;
 
 	UPROPERTY(EditDefaultsOnly)
-		FTransform EffectTransform;
+	FTransform EffectTransform;
 
 	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<UCameraShake> ShakeClass; 
+	TSubclassOf<UCameraShake> ShakeClass; 
 };
 
 UCLASS()
@@ -73,28 +73,26 @@ public:
 	FORCEINLINE ACDoAction* GetDoAction() { return DoAction; }
 
 public:
-	UPROPERTY(EditAnywhere, Category = "Eqipment")
-		TSubclassOf<ACEquipment> EquipmentClass;
+	UPROPERTY(EditAnywhere, Category = "Equipment")
+	TSubclassOf<ACEquipment> EquipmentClass;
 
-	UPROPERTY(EditAnywhere, Category = "Eqipment")
-		FEquipmentData EquipmentData;
+	UPROPERTY(EditAnywhere, Category = "Equipment")
+	FEquipmentData EquipmentData;
 
-	UPROPERTY(EditAnywhere, Category = "Eqipment")
-		FLinearColor EquipmentColor;
+	UPROPERTY(EditAnywhere, Category = "Equipment")
+	FLinearColor EquipmentColor;
 
 	UPROPERTY(EditAnywhere, Category = "Attachment")
-		TSubclassOf<ACAttachment> AttachmentClass;
-
-
-	UPROPERTY(EditAnywhere, Category = "DoAction")
-		TSubclassOf<ACDoAction> DoActionClass;
+	TSubclassOf<ACAttachment> AttachmentClass;
 
 	UPROPERTY(EditAnywhere, Category = "DoAction")
-		TArray<FDoActionData> DoActionDatas;
+	TSubclassOf<ACDoAction> DoActionClass;
+
+	UPROPERTY(EditAnywhere, Category = "DoAction")
+	TArray<FDoActionData> DoActionDatas;
 
 private:
 	ACEquipment* Equipment;
 	ACAttachment* Attachment;
 	ACDoAction* DoAction;
-
 };

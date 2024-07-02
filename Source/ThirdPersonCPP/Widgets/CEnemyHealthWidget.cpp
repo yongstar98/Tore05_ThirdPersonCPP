@@ -5,4 +5,3 @@ void UCEnemyHealthWidget::ApplyHealth_Implementation(float InCurrentHealth, floa
 {
 	HealthBar->SetPercent(InCurrentHealth / InMaxHealth);
 }
-
