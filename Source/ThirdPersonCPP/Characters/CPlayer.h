@@ -26,7 +26,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -50,8 +50,12 @@ private:
 	void OnFist();
 	void OnOneHand();
 	void OnTwoHand();
+	void OnMagicBall();
+	void OnWarp();
 
 	void OnPrimaryAction();
+	void OnSecondaryAction();
+	void OffSecondaryAction();
 
 private:
 	void Begin_Roll();
@@ -63,29 +67,29 @@ public:
 
 private:
 	UFUNCTION()
-	void OnStateTypeChanged(EStateType InPrevType, EStateType InNewType);
+		void OnStateTypeChanged(EStateType InPrevType, EStateType InNewType);
 
 protected:
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-	USpringArmComponent* SpringArmComp;
+		USpringArmComponent* SpringArmComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-	UCameraComponent* CameraComp;
+		UCameraComponent* CameraComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-	UCAttributeComponent* AttributeComp;
+		UCAttributeComponent* AttributeComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-	UCOptionComponent* OptionComp;
+		UCOptionComponent* OptionComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-	UCStateComponent* StateComp;
+		UCStateComponent* StateComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-	UCMontagesComponent* MontagesComp;
+		UCMontagesComponent* MontagesComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-	UCActionComponent* ActionComp;
+		UCActionComponent* ActionComp;
 
 private:
 	UMaterialInstanceDynamic* BodyMaterial;

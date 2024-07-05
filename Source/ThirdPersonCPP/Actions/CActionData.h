@@ -11,6 +11,8 @@ class ACDoAction;
 class ACharacter;
 class UParticleSystem;
 class UCameraShake;
+class ACProjectile;
+
 
 USTRUCT(BlueprintType)
 struct FEquipmentData
@@ -54,6 +56,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UCameraShake> ShakeClass; 
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ACProjectile> ProjectileClass;
 };
 
 UCLASS()
@@ -71,6 +76,7 @@ public:
 	FORCEINLINE ACEquipment* GetEquipment() { return Equipment; }
 	FORCEINLINE ACAttachment* GetAttachment() { return Attachment; }
 	FORCEINLINE ACDoAction* GetDoAction() { return DoAction; }
+	FORCEINLINE FLinearColor GetEquipmentColor() { return EquipmentColor; }
 
 public:
 	UPROPERTY(EditAnywhere, Category = "Equipment")

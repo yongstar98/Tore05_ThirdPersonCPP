@@ -6,7 +6,6 @@
 #include "Actions/CDoAction.h"
 #include "Actions/CAttachment.h"
 
-
 UCActionComponent::UCActionComponent()
 {
 
@@ -40,7 +39,19 @@ void UCActionComponent::DoAction()
 	}
 }
 
-void UCActionComponent::OffAllCollisions()
+void UCActionComponent::DoSubAction(bool bBegin)
+{
+	CheckTrue(IsUnarmedMode());
+
+	if (DataAssets[(int32)Type] && DataAssets[(int32)Type]->GetDoAction())
+	{
+		ACDoAction* DoAction = DataAssets[(int32)Type]->GetDoAction();
+
+		bBegin ? DoAction->Begin_SubAction() : DoAction->End_SubAction();
+	}
+}
+
+void UCActionComponent::OffAllCollsions()
 {
 	for (const auto& DataAsset : DataAssets)
 	{
@@ -49,6 +60,7 @@ void UCActionComponent::OffAllCollisions()
 			DataAsset->GetAttachment()->OffCollision();
 		}
 	}
+
 }
 
 void UCActionComponent::SetUnarmedMode()
@@ -62,6 +74,7 @@ void UCActionComponent::SetUnarmedMode()
 	{
 		DataAssets[(int32)EActionType::Unarmed]->GetEquipment()->Equip();
 	}
+
 	ChangeType(EActionType::Unarmed);
 }
 
@@ -120,6 +133,8 @@ void UCActionComponent::ChangeType(EActionType InNewType)
 {
 	EActionType Prev = Type;
 	Type = InNewType;
+
+
 
 	if (OnActionTypeChanged.IsBound())
 	{

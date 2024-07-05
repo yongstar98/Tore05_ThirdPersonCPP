@@ -24,6 +24,11 @@ void UCActionData::BeginPlay(ACharacter* InOwnerCharacter)
 		Equipment->SetActorLabel(MakeActorLable(InOwnerCharacter, "Equipment"));
 		Equipment->FinishSpawning(Transform);
 
+		if (Equipment)
+		{
+			DoAction->SetEquipped(Equipment->IsEquipped());
+		}
+
 		if (Attachment)
 		{
 			Equipment->OnEquipmentDelegate.AddDynamic(Attachment, &ACAttachment::OnEquip);
