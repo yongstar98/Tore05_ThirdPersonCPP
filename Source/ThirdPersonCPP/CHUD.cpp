@@ -17,7 +17,6 @@ void ACHUD::BeginPlay()
 	StateComp = CHelpers::GetComponent<UCStateComponent>(PlayerCharacter);
 
 	StateTypeAsUEnum = FindObject<UEnum>(ANY_PACKAGE, TEXT("EStateType"));
-
 }
 
 void ACHUD::DrawHUD()
@@ -29,6 +28,7 @@ void ACHUD::DrawHUD()
 		FString StateTypeString = StateTypeAsUEnum->GetNameStringByValue((int64)StateComp->GetType());
 		DrawText("CurrentState : " + StateTypeString, FLinearColor::Red, 10.f, Canvas->ClipY - 30.f);
 	}
+
 
 	CheckFalse(bVisibleAim);
 	FVector2D Center(Canvas->ClipX * 0.5f, Canvas->ClipY * 0.5f);

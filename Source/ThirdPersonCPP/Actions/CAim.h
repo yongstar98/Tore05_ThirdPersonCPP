@@ -30,7 +30,7 @@ public:
 
 private:
 	UFUNCTION()
-		void OnProgress(float Output);
+	void OnProgress(float Output);
 
 private:
 	ACharacter* OwnerCharacter;

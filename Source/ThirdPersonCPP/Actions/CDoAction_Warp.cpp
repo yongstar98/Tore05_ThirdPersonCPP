@@ -1,6 +1,6 @@
 #include "CDoAction_Warp.h"
 #include "Global.h"
-#include "GameFrameWork/Character.h"
+#include "GameFramework/Character.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/CStateComponent.h"
@@ -19,6 +19,7 @@ void ACDoAction_Warp::BeginPlay()
 			break;
 		}
 	}
+	
 }
 
 void ACDoAction_Warp::Tick(float DeltaTime)
@@ -49,20 +50,19 @@ void ACDoAction_Warp::DoAction()
 	CheckFalse(GetCursorLocationAndRotation(Location, Temp));
 
 	StateComp->SetActionMode();
-
 	OwnerCharacter->PlayAnimMontage(Datas[0].AnimMontage, Datas[0].PlayRate, Datas[0].StartSection);
 	Datas[0].bCanMove ? AttributeComp->SetMove() : AttributeComp->SetStop();
+
+	SetPreviewMeshColor(FLinearColor(20, 0, 0)); //Todo. PoseableMesh 라는게 있단다.
 }
 
 void ACDoAction_Warp::Begin_DoAction()
 {
 	Super::Begin_DoAction();
 
-
 	FTransform Trasnform = Datas[0].EffectTransform;
 	Trasnform.AddToTranslation(OwnerCharacter->GetActorLocation());
-
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Datas[0].Effect, Trasnform);
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld() ,Datas[0].Effect, Trasnform);
 }
 
 void ACDoAction_Warp::End_DoAction()
@@ -74,6 +74,8 @@ void ACDoAction_Warp::End_DoAction()
 
 	StateComp->SetIdleMode();
 	AttributeComp->SetMove();
+
+	SetPreviewMeshColor(FLinearColor(0, 20, 20));
 }
 
 bool ACDoAction_Warp::GetCursorLocationAndRotation(FVector& OutLocation, FRotator& OutRotation)
@@ -82,7 +84,6 @@ bool ACDoAction_Warp::GetCursorLocationAndRotation(FVector& OutLocation, FRotato
 
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 	ObjectTypes.Add(ObjectTypeQuery1);
-
 
 	FHitResult Hit;
 	if (PC->GetHitResultUnderCursorForObjects(ObjectTypes, true, Hit))
@@ -93,7 +94,12 @@ bool ACDoAction_Warp::GetCursorLocationAndRotation(FVector& OutLocation, FRotato
 		return true;
 	}
 
-
-
 	return false;
+}
+
+
+void ACDoAction_Warp::SetPreviewMeshColor(FLinearColor InColor)
+{
+	FVector FromColor = FVector(InColor.R, InColor.G, InColor.B);
+	PreviewMeshComp->SetVectorParameterValueOnMaterials("Emissive", FromColor);
 }

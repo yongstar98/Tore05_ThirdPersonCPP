@@ -11,7 +11,7 @@ UCLASS()
 class THIRDPERSONCPP_API ACDoAction_MagicBall : public ACDoAction
 {
 	GENERATED_BODY()
-
+	
 protected:
 	virtual void BeginPlay() override;
 

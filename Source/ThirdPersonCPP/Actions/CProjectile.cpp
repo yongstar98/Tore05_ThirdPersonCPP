@@ -8,16 +8,15 @@ ACProjectile::ACProjectile()
 {
 	CHelpers::CreateSceneComponent(this, &SphereComp, "SphereComp");
 	CHelpers::CreateSceneComponent(this, &ParticleComp, "ParticleComp", SphereComp);
-
+	
 	CHelpers::CreateActorComponent(this, &ProjectileComp, "ProjectileComp");
 
 	InitialLifeSpan = 3.f;
 	ProjectileComp->InitialSpeed = 4000.f;
 	ProjectileComp->MaxSpeed = 8000.f;
 	ProjectileComp->ProjectileGravityScale = 0.f;
-
-
 }
+
 void ACProjectile::BeginPlay()
 {
 	Super::BeginPlay();
@@ -29,7 +28,6 @@ void ACProjectile::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCompon
 {
 	CheckTrue(OtherActor == GetOwner());
 
-
 	if (OnProjectileBeginOverlap.IsBound())
 	{
 		OnProjectileBeginOverlap.Broadcast(SweepResult);
@@ -37,7 +35,4 @@ void ACProjectile::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCompon
 
 	Destroy();
 }
-
-
-
 

@@ -23,9 +23,9 @@ void UCAim::BeginPlay(ACharacter* InOwnerCharacter)
 
 	APlayerController* PC = OwnerCharacter->GetWorld()->GetFirstPlayerController();
 	CheckNull(PC);
-
+	
 	HUD = PC->GetHUD<ACHUD>();
-
+	
 }
 
 void UCAim::Tick(float DeltaTime)

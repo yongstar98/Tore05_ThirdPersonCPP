@@ -14,8 +14,8 @@ UCLASS()
 class THIRDPERSONCPP_API ACProjectile : public AActor
 {
 	GENERATED_BODY()
-
-public:
+	
+public:	
 	ACProjectile();
 
 protected:
@@ -25,20 +25,17 @@ private:
 	UFUNCTION()
 	void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-
-
 public:
 	UPROPERTY(BlueprintAssignable)
-		FProjectileBeginOverlap OnProjectileBeginOverlap;
+	FProjectileBeginOverlap OnProjectileBeginOverlap;
 
 private:
 	UPROPERTY(VisibleDefaultsOnly)
-		USphereComponent* SphereComp;
+	USphereComponent* SphereComp;
 
 	UPROPERTY(VisibleDefaultsOnly)
-		UParticleSystemComponent* ParticleComp;
+	UParticleSystemComponent* ParticleComp;
 
 	UPROPERTY(VisibleDefaultsOnly)
-		UProjectileMovementComponent* ProjectileComp;
+	UProjectileMovementComponent* ProjectileComp;
 };
-

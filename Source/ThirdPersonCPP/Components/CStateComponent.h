@@ -24,7 +24,7 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	FORCEINLINE EStateType GetType() { return Type; }
+	FORCEINLINE EStateType GetType() {return Type;}
 
 public:
 	UFUNCTION(BlueprintPure)
@@ -65,5 +65,4 @@ public:
 
 private:
 	EStateType Type;
-		
 };

@@ -64,7 +64,7 @@ ACEnemy::ACEnemy()
 	HealthWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
 
 	//Get Dissolve Curve Asset
-	CHelpers::GetAsset(&DissolveCurve, "/Game/Game/Curve_Dissolve");
+	CHelpers::GetAsset(&DissolveCurve, "/Game/Game/Curve_Dissovle");
 }
 
 void ACEnemy::BeginPlay()
@@ -80,7 +80,7 @@ void ACEnemy::BeginPlay()
 
 	BodyMaterial = UMaterialInstanceDynamic::Create(BodyMaterialAsset, this);
 	LogoMaterial = UMaterialInstanceDynamic::Create(LogoMaterialAsset, this);
-	DissolveMaterial = UMaterialInstanceDynamic::Create(DissolveMaterialAsset, this);
+	DissolveMaterial= UMaterialInstanceDynamic::Create(DissolveMaterialAsset, this);
 
 	GetMesh()->SetMaterial(0, BodyMaterial);
 	GetMesh()->SetMaterial(1, LogoMaterial);
@@ -90,7 +90,7 @@ void ACEnemy::BeginPlay()
 
 	//BP BeginPlay
 	Super::BeginPlay();
-	ActionComp->SetUnarmedMode();
+	//ActionComp->SetUnarmedMode();
 
 	//Widget Settings
 	NameWidgetComp->InitWidget();
@@ -142,9 +142,9 @@ void ACEnemy::ChangeBodyColor(FLinearColor InColor)
 
 float ACEnemy::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	DamageValue = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+ 	DamageValue = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 	DamageInstigator = EventInstigator;
-
+	
 	AttributeComp->DecreaseHealth(Damage);
 
 	if (AttributeComp->GetCurrentHealth() <= 0.f)
@@ -162,17 +162,17 @@ void ACEnemy::OnStateTypeChanged(EStateType InPrevType, EStateType InNewType)
 {
 	switch (InNewType)
 	{
-	case EStateType::Hitted:
-	{
-		Hitted();
-	}
-	break;
+		case EStateType::Hitted:
+		{
+			Hitted();
+		}
+		break;
 
-	case EStateType::Dead:
-	{
-		Dead();
-	}
-	break;
+		case EStateType::Dead:
+		{
+			Dead();
+		}
+		break;
 	}
 }
 
@@ -215,6 +215,13 @@ void ACEnemy::Dead()
 	GetMesh()->SetCollisionProfileName("Ragdoll");
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCharacterMovement()->DisableMovement();
+
+	//Add Impulse
+	FVector Start = GetActorLocation();
+	FVector Target = DamageInstigator->GetPawn()->GetActorLocation();
+	FVector Direction = Start - Target;
+	Direction.Normalize();
+	GetMesh()->AddImpulseAtLocation(Direction * 3000 * DamageValue, Start);
 
 	//Off All Attachemnt Collisions
 	ActionComp->OffAllCollsions();

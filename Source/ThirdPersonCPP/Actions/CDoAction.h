@@ -13,8 +13,8 @@ UCLASS()
 class THIRDPERSONCPP_API ACDoAction : public AActor
 {
 	GENERATED_BODY()
-
-public:
+	
+public:	
 	ACDoAction();
 
 protected:
@@ -35,22 +35,24 @@ public:
 	virtual void Begin_SubAction() {};
 	virtual void End_SubAction() {};
 
+	virtual void Abort() {};
+
 public:
 	UFUNCTION()
-		virtual void OnAttachmentBeginOverlap(ACharacter* InAttacker, AActor* InCauser, ACharacter* InOtherCharacter) {};
+	virtual void OnAttachmentBeginOverlap(ACharacter* InAttacker, AActor* InCauser, ACharacter* InOtherCharacter) {};
 
 	UFUNCTION()
-		virtual void OnAttachmentEndOverlap(ACharacter* InAttacker, AActor* InCauser, ACharacter* InOtherCharacter) {};
+	virtual void OnAttachmentEndOverlap(ACharacter* InAttacker, AActor* InCauser, ACharacter* InOtherCharacter) {};
 
 protected:
 	UPROPERTY(BlueprintReadOnly)
-		ACharacter* OwnerCharacter;
+	ACharacter* OwnerCharacter;
 
 	UPROPERTY(BlueprintReadOnly)
-		UCAttributeComponent* AttributeComp;
+	UCAttributeComponent* AttributeComp;
 
 	UPROPERTY(BlueprintReadOnly)
-		UCStateComponent* StateComp;
+	UCStateComponent* StateComp;
 
 protected:
 	TArray<FDoActionData> Datas;

@@ -46,21 +46,18 @@ void ACDoAction_MagicBall::Begin_DoAction()
 {
 	Super::Begin_DoAction();
 
-
 	CheckNull(Datas[0].ProjectileClass);
-
+	
 	FVector CamLoc;
 	FRotator CamRot;
 	OwnerCharacter->GetController()->GetPlayerViewPoint(CamLoc, CamRot);
 
 	FVector HandLocation = OwnerCharacter->GetMesh()->GetSocketLocation("hand_r");
 
-	FVector SpawnLocation = CamLoc + CamRot.Vector() * ((HandLocation - CamLoc) | CamRot.Vector());
+	FVector SpawnLoctaion = CamLoc + CamRot.Vector() * ((HandLocation - CamLoc) | CamRot.Vector());
 
-
-	
 	FTransform Tranform;
-	Tranform.SetLocation(SpawnLocation);
+	Tranform.SetLocation(SpawnLoctaion);
 	Tranform.SetRotation(FQuat(CamRot));
 
 	ACProjectile* ProjectileIntance = GetWorld()->SpawnActorDeferred<ACProjectile>(Datas[0].ProjectileClass, Tranform, OwnerCharacter, OwnerCharacter, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
@@ -68,11 +65,10 @@ void ACDoAction_MagicBall::Begin_DoAction()
 	ProjectileIntance->FinishSpawning(Tranform);
 }
 
-
 void ACDoAction_MagicBall::End_DoAction()
 {
 	Super::End_DoAction();
-
+	
 	StateComp->SetIdleMode();
 	AttributeComp->SetMove();
 }
@@ -98,6 +94,15 @@ void ACDoAction_MagicBall::OnProjectileBeginOverlap(FHitResult InHitResult)
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Datas[0].Effect, EffectTransform);
 	}
 
+	TSubclassOf<UCameraShake> ShakeClass = Datas[0].ShakeClass;
+	if (ShakeClass)
+	{
+		APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		if (PC)
+		{
+			PC->PlayerCameraManager->PlayCameraShake(ShakeClass);
+		}
+	}
 
 	FDamageEvent DamageEvent;
 	InHitResult.GetActor()->TakeDamage(Datas[0].Power, DamageEvent, OwnerCharacter->GetController(), this);
@@ -107,5 +112,6 @@ void ACDoAction_MagicBall::AbortByActionTypeChanged(EActionType InPrevType, EAct
 {
 	CheckFalse(Aim->CanAim());
 	CheckFalse(Aim->IsZooming());
+
 	Aim->Off();
 }

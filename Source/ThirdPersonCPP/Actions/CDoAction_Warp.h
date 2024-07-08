@@ -10,7 +10,7 @@ UCLASS()
 class THIRDPERSONCPP_API ACDoAction_Warp : public ACDoAction
 {
 	GENERATED_BODY()
-	
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -22,10 +22,9 @@ public:
 	virtual void Begin_DoAction() override;
 	virtual void End_DoAction() override;
 
-
 private:
 	bool GetCursorLocationAndRotation(FVector& OutLocation, FRotator& OutRotation);
-
+	void SetPreviewMeshColor(FLinearColor InColor);
 
 private:
 	USkeletalMeshComponent* PreviewMeshComp;

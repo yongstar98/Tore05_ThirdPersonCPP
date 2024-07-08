@@ -23,10 +23,10 @@ public:
 public:
 	void VisibleAim();
 	void InvisibleAim();
-
+	
 private:
 	UPROPERTY(EditDefaultsOnly)
-		UTexture2D* CrossHairTexture;
+	UTexture2D* CrossHairTexture;
 
 
 private:

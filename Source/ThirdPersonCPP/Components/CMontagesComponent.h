@@ -44,7 +44,6 @@ public:
 	void PlayHitted();
 	void PlayDead();
 
-
 private:
 	void PlayAnimMontage(EStateType InStateType);
 

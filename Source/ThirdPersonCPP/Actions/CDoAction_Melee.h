@@ -19,7 +19,7 @@ public:
 	virtual void DoAction() override;
 	virtual void Begin_DoAction() override;
 	virtual void End_DoAction() override;
-	
+
 public:
 	void EnableCombo();
 	void DisableCombo();
@@ -28,11 +28,11 @@ public:
 private:
 	UFUNCTION()
 	void RestoreGlobalTimeDilation();
-
+	
 private:
 	int32 ComboCount;
 	bool bCanCombo;
-	bool bSuccesCombo;
+	bool bSuccessCombo;
 
 	TArray<ACharacter*> HittedCharacters;
 };

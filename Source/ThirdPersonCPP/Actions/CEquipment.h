@@ -24,7 +24,7 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	FORCEINLINE const bool* IsEquipped() { return &bEquipped; };
+	FORCEINLINE const bool* IsEquipped() { return &bEquipped; } //실시간성 보장
 
 	void SetData(const FEquipmentData& InData);
 	void SetColor(const FLinearColor& InColor);

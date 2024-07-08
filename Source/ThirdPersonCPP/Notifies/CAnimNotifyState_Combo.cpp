@@ -13,12 +13,12 @@ void UCAnimNotifyState_Combo::NotifyBegin(USkeletalMeshComponent* MeshComp, UAni
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration);
 	CheckNull(MeshComp->GetOwner());
-	
+
 	UCActionComponent* ActionComp = CHelpers::GetComponent<UCActionComponent>(MeshComp->GetOwner());
 	CheckNull(ActionComp);
 
 	UCActionData* ActionData = ActionComp->GetCurrentActionData();
-	CheckNull(ActionComp);
+	CheckNull(ActionData);
 
 	ACDoAction_Melee* DoAction_Melee = Cast<ACDoAction_Melee>(ActionData->GetDoAction());
 	CheckNull(DoAction_Melee);
@@ -29,16 +29,16 @@ void UCAnimNotifyState_Combo::NotifyBegin(USkeletalMeshComponent* MeshComp, UAni
 void UCAnimNotifyState_Combo::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
 	Super::NotifyEnd(MeshComp, Animation);
+	CheckNull(MeshComp->GetOwner());
 
 	UCActionComponent* ActionComp = CHelpers::GetComponent<UCActionComponent>(MeshComp->GetOwner());
 	CheckNull(ActionComp);
 
 	UCActionData* ActionData = ActionComp->GetCurrentActionData();
-	CheckNull(ActionComp);
+	CheckNull(ActionData);
 
 	ACDoAction_Melee* DoAction_Melee = Cast<ACDoAction_Melee>(ActionData->GetDoAction());
 	CheckNull(DoAction_Melee);
 
 	DoAction_Melee->DisableCombo();
 }
-

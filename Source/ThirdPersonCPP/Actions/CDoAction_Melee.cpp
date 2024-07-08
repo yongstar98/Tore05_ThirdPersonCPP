@@ -12,18 +12,15 @@ void ACDoAction_Melee::DoAction()
 	if (bCanCombo)
 	{
 		bCanCombo = false;
-		bSuccesCombo = true;
+		bSuccessCombo = true;
 
 		return;
 	}
 
-
 	CheckFalse(StateComp->IsIdleMode());
-
-
 	StateComp->SetActionMode();
-	OwnerCharacter->PlayAnimMontage(Datas[0].AnimMontage, Datas[0].PlayRate, Datas[0].StartSection);
 
+	OwnerCharacter->PlayAnimMontage(Datas[0].AnimMontage, Datas[0].PlayRate, Datas[0].StartSection);
 	Datas[0].bCanMove ? AttributeComp->SetMove() : AttributeComp->SetStop();
 }
 
@@ -31,8 +28,8 @@ void ACDoAction_Melee::Begin_DoAction()
 {
 	Super::Begin_DoAction();
 
-	CheckFalse(bSuccesCombo);
-	bSuccesCombo = false;
+	CheckFalse(bSuccessCombo);
+	bSuccessCombo = false;
 
 	OwnerCharacter->StopAnimMontage();
 
@@ -41,7 +38,6 @@ void ACDoAction_Melee::Begin_DoAction()
 
 	OwnerCharacter->PlayAnimMontage(Datas[ComboCount].AnimMontage, Datas[ComboCount].PlayRate, Datas[ComboCount].StartSection);
 	Datas[ComboCount].bCanMove ? AttributeComp->SetMove() : AttributeComp->SetStop();
-
 }
 
 void ACDoAction_Melee::End_DoAction()
@@ -54,7 +50,6 @@ void ACDoAction_Melee::End_DoAction()
 	StateComp->SetIdleMode();
 	AttributeComp->SetMove();
 }
-
 
 void ACDoAction_Melee::EnableCombo()
 {
@@ -81,20 +76,19 @@ void ACDoAction_Melee::OnAttachmentBeginOverlap(ACharacter* InAttacker, AActor* 
 	Super::OnAttachmentBeginOverlap(InAttacker, InCauser, InOtherCharacter);
 
 	//Blocking Multiple Hit
-	int32 NumberOfHittedCharacter = HittedCharacters.Num();
+	int32 NuumberOfHittedCharacters = HittedCharacters.Num();
 	HittedCharacters.AddUnique(InOtherCharacter);
-	CheckFalse(NumberOfHittedCharacter < HittedCharacters.Num());
+	CheckFalse(NuumberOfHittedCharacters < HittedCharacters.Num());
 
 	//HitStop
 	float HitStop = Datas[ComboCount].HitStop;
-
 	if (FMath::IsNearlyZero(HitStop) == false)
 	{
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.02f);
 		UKismetSystemLibrary::K2_SetTimer(this, "RestoreGlobalTimeDilation", HitStop * 0.02f, false);
 	}
 
-	TSubclassOf<UCameraShake> ShakeClass =  Datas[ComboCount].ShakeClass;
+	TSubclassOf<UCameraShake> ShakeClass = Datas[ComboCount].ShakeClass;
 	if (ShakeClass)
 	{
 		APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
@@ -104,6 +98,7 @@ void ACDoAction_Melee::OnAttachmentBeginOverlap(ACharacter* InAttacker, AActor* 
 		}
 	}
 
+	//Hit Particle
 	UParticleSystem* HitEffect = Datas[ComboCount].Effect;
 	if (HitEffect)
 	{
@@ -115,7 +110,6 @@ void ACDoAction_Melee::OnAttachmentBeginOverlap(ACharacter* InAttacker, AActor* 
 	//Take Damage
 	FDamageEvent DamageEvent;
 	InOtherCharacter->TakeDamage(Datas[ComboCount].Power, DamageEvent, InAttacker->GetController(), InCauser);
-
 }
 
 void ACDoAction_Melee::OnAttachmentEndOverlap(ACharacter* InAttacker, AActor* InCauser, ACharacter* InOtherCharacter)

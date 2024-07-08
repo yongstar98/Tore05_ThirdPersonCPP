@@ -34,52 +34,52 @@ public:
 
 private:
 	UFUNCTION()
-		void OnStateTypeChanged(EStateType InPrevType, EStateType InNewType);
+	void OnStateTypeChanged(EStateType InPrevType, EStateType InNewType);
 
 private:
 	void Hitted();
 	void Dead();
 
 	UFUNCTION()
-		void RestoreLogoColor();
+	void RestoreLogoColor();
 
 	UFUNCTION()
-		void StartDissolve(float Output);
+	void StartDissolve(float Output);
 
 	UFUNCTION()
-		void EndDissolve();
+	void EndDissolve();
 
 protected:
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-		UCAttributeComponent* AttributeComp;
+	UCAttributeComponent* AttributeComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-		UCStateComponent* StateComp;
+	UCStateComponent* StateComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-		UCMontagesComponent* MontagesComp;
+	UCMontagesComponent* MontagesComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-		UCActionComponent* ActionComp;
+	UCActionComponent* ActionComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-		UWidgetComponent* NameWidgetComp;
+	UWidgetComponent* NameWidgetComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-		UWidgetComponent* HealthWidgetComp;
+	UWidgetComponent* HealthWidgetComp;
 
 	UPROPERTY(EditAnywhere, Category = "Hitted")
-		float LaunchValue;
+	float LaunchValue;
 
 	UPROPERTY(EditAnywhere, Category = "Hitted")
-		UCurveFloat* DissolveCurve;
+	UCurveFloat* DissolveCurve;
 
 private:
 	UMaterialInstanceDynamic* BodyMaterial;
 	UMaterialInstanceDynamic* LogoMaterial;
 
 	UPROPERTY(VisibleInstanceOnly)
-		UMaterialInstanceDynamic* DissolveMaterial;
+	UMaterialInstanceDynamic* DissolveMaterial;
 
 	AController* DamageInstigator;
 	float DamageValue;

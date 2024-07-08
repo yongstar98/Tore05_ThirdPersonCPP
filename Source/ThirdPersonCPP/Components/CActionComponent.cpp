@@ -134,8 +134,6 @@ void UCActionComponent::ChangeType(EActionType InNewType)
 	EActionType Prev = Type;
 	Type = InNewType;
 
-
-
 	if (OnActionTypeChanged.IsBound())
 	{
 		OnActionTypeChanged.Broadcast(Prev, InNewType);

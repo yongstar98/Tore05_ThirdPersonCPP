@@ -13,7 +13,6 @@ class UParticleSystem;
 class UCameraShake;
 class ACProjectile;
 
-
 USTRUCT(BlueprintType)
 struct FEquipmentData
 {
@@ -55,7 +54,7 @@ public:
 	FTransform EffectTransform;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UCameraShake> ShakeClass; 
+	TSubclassOf<UCameraShake> ShakeClass;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ACProjectile> ProjectileClass;
