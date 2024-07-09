@@ -40,7 +40,7 @@ ACPlayer::ACPlayer()
 	TSubclassOf<UAnimInstance> AnimInstanceClass;
 	CHelpers::GetClass<UAnimInstance>(&AnimInstanceClass, "/Game/Player/ABP_CPlayer");
 	GetMesh()->SetAnimInstanceClass(AnimInstanceClass);
-	
+
 	//-> SpringArmComp
 	SpringArmComp->SetRelativeLocation(FVector(0, 0, 140));
 	SpringArmComp->SetRelativeRotation(FRotator(0, 90, 0));
@@ -73,7 +73,7 @@ void ACPlayer::BeginPlay()
 
 	GetMesh()->SetMaterial(0, BodyMaterial);
 	GetMesh()->SetMaterial(1, LogoMaterial);
-	
+
 
 	ActionComp->SetUnarmedMode();
 }
@@ -137,7 +137,7 @@ void ACPlayer::OnMoveRight(float Axis)
 
 void ACPlayer::OnTurn(float Axis)
 {
-	float Rate = Axis* OptionComp->GetMouseXRate()* GetWorld()->GetDeltaSeconds();
+	float Rate = Axis * OptionComp->GetMouseXRate() * GetWorld()->GetDeltaSeconds();
 
 	AddControllerYawInput(Rate);
 }
@@ -254,7 +254,7 @@ void ACPlayer::Begin_Roll()
 	{
 		Target = Start + GetVelocity().GetSafeNormal2D();
 	}
-	
+
 	FRotator ForceRotation = UKismetMathLibrary::FindLookAtRotation(Start, Target);
 	SetActorRotation(ForceRotation);
 
@@ -305,17 +305,16 @@ void ACPlayer::OnStateTypeChanged(EStateType InPrevType, EStateType InNewType)
 {
 	switch (InNewType)
 	{
-		case EStateType::Roll:
-		{
-			Begin_Roll();
-		}
-		break;
-		
-		case EStateType::Backstep:
-		{
-			Begin_Backstep();
-		}
-		break;
+	case EStateType::Roll:
+	{
+		Begin_Roll();
+	}
+	break;
+
+	case EStateType::Backstep:
+	{
+		Begin_Backstep();
+	}
+	break;
 	}
 }
-
