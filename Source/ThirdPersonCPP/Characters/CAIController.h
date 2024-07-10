@@ -5,6 +5,9 @@
 #include "CAIController.generated.h"
 
 class ACEnemy_AI;
+class UCBehaviorComponent;
+class UAIPerceptionComponent;
+class UAISenseConfig_Sight;
 
 UCLASS()
 class THIRDPERSONCPP_API ACAIController : public AAIController
@@ -20,9 +23,22 @@ protected:
 
 public:
 	virtual void Tick(float DeltaTime) override;
+private:
+	UFUNCTION()
+		void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
+
+protected:
+	UPROPERTY(VisibleDefaultsOnly)
+	UAIPerceptionComponent* PerceptionComp;
+
+
+	UPROPERTY(VisibleDefaultsOnly)
+	UCBehaviorComponent* BehaviorComp;
+
 
 private:
 	ACEnemy_AI* OwnerEnemy;
 
+	UAISenseConfig_Sight* Sight;
 };
 
