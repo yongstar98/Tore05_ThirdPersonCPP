@@ -1,10 +1,11 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
 #pragma once
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "CCharacterInterface.generated.h"
 
-// This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UCCharacterInterface : public UInterface
 {
@@ -17,5 +18,4 @@ class THIRDPERSONCPP_API ICCharacterInterface
 
 public:
 	virtual void ChangeBodyColor(FLinearColor InColor) = 0;
-
 };

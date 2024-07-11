@@ -1,7 +1,10 @@
+#pragma once
+
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Components/CStateComponent.h"
 #include "Interfaces/CCharacterInterface.h"
+#include "GenericTeamAgentInterface.h"
 #include "CPlayer.generated.h"
 
 class USpringArmComponent;
@@ -9,12 +12,12 @@ class UCameraComponent;
 class UCAttributeComponent;
 class UCOptionComponent;
 class UCStateComponent;
-class UCMotagesComponent;
+class UCMontagesComponent;
 class UCActionComponent;
 class UMaterialInstanceDynamic;
 
 UCLASS()
-class THIRDPERSONCPP_API ACPlayer : public ACharacter, public ICCharacterInterface
+class THIRDPERSONCPP_API ACPlayer : public ACharacter, public ICCharacterInterface, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -24,9 +27,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:
+public:	
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual FGenericTeamId GetGenericTeamId() const override;
 
 public:
 	void ChangeBodyColor(FLinearColor InColor) override;
@@ -45,11 +49,21 @@ private:
 
 	void OnEvade();
 
+	void OnPrimaryAction();
+	void OnSecondaryAction();
+	void OffSecondaryAction();
+
+private:
+	friend class ACPlayerController;
+
 	void OnFist();
 	void OnOneHand();
 	void OnTwoHand();
+	void OnMagicBall();
+	void OnWarp();
+	void OnWhirlWind();
 
-	void OnPrimaryAction();
+
 
 private:
 	void Begin_Roll();
@@ -61,29 +75,33 @@ public:
 
 private:
 	UFUNCTION()
-		void OnStateTypeChanged(EStateType InPrevType, EStateType InNewType);
+	void OnStateTypeChanged(EStateType InPrevType, EStateType InNewType);
 
 protected:
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-		USpringArmComponent* SpringArmComp;
+	USpringArmComponent* SpringArmComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-		UCameraComponent* CameraComp;
+	UCameraComponent* CameraComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-		UCAttributeComponent* AttributeComp;
+	UCAttributeComponent* AttributeComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-		UCOptionComponent* OptionComp;
+	UCOptionComponent* OptionComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-		UCStateComponent* StateComp;
+	UCStateComponent* StateComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-		UCMotagesComponent* MontagesComp;
+	UCMontagesComponent* MontagesComp;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-		UCActionComponent* ActionComp;
+	UCActionComponent* ActionComp;
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "TeamID")
+	uint8 TeamID;
 
 private:
 	UMaterialInstanceDynamic* BodyMaterial;

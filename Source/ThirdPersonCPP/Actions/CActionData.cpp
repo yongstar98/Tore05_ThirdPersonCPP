@@ -4,18 +4,21 @@
 #include "CEquipment.h"
 #include "CAttachment.h"
 #include "CDoAction.h"
+#include "CAction.h"
 
-void UCActionData::BeginPlay(ACharacter* InOwnerCharacter)
+void UCActionData::BeginPlay(ACharacter* InOwnerCharacter, UCAction** OutAction)
 {
 	FTransform Transform;
 
+	ACAttachment* Attachment = nullptr;
 	if (AttachmentClass)
-	{
+	{	
 		Attachment = InOwnerCharacter->GetWorld()->SpawnActorDeferred<ACAttachment>(AttachmentClass, Transform, InOwnerCharacter);
 		Attachment->SetActorLabel(MakeActorLable(InOwnerCharacter, "Attachment"));
 		Attachment->FinishSpawning(Transform);
 	}
 
+	ACEquipment* Equipment = nullptr;
 	if (EquipmentClass)
 	{
 		Equipment = InOwnerCharacter->GetWorld()->SpawnActorDeferred<ACEquipment>(EquipmentClass, Transform, InOwnerCharacter);
@@ -31,7 +34,7 @@ void UCActionData::BeginPlay(ACharacter* InOwnerCharacter)
 		}
 	}
 
-
+	ACDoAction* DoAction = nullptr;
 	if (DoActionClass)
 	{
 		DoAction = InOwnerCharacter->GetWorld()->SpawnActorDeferred<ACDoAction>(DoActionClass, Transform, InOwnerCharacter);
@@ -39,7 +42,24 @@ void UCActionData::BeginPlay(ACharacter* InOwnerCharacter)
 		DoAction->SetActorLabel(MakeActorLable(InOwnerCharacter, "DoAction"));
 		DoAction->AttachToComponent(InOwnerCharacter->GetMesh(), FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
 		DoAction->FinishSpawning(Transform);
+		
+		if (Equipment)
+		{
+			DoAction->SetEquipped(Equipment->IsEquipped());
+		}
+
+		if (Attachment)
+		{
+			Attachment->OnAttachmentBeginOverlap.AddDynamic(DoAction, &ACDoAction::OnAttachmentBeginOverlap);
+			Attachment->OnAttachmentEndOverlap.AddDynamic(DoAction, &ACDoAction::OnAttachmentEndOverlap);
+		}
 	}
+
+	*OutAction = NewObject<UCAction>();
+	(*OutAction)->Attachment = Attachment;
+	(*OutAction)->Equipment = Equipment;
+	(*OutAction)->DoAction = DoAction;
+	(*OutAction)->EquipmentColor = EquipmentColor;
 }
 
 FString UCActionData::MakeActorLable(ACharacter* InOwnerCharacter, FString InMiddleName)

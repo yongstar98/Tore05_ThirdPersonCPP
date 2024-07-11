@@ -5,6 +5,7 @@
 #include "CActionComponent.generated.h"
 
 class UCActionData;
+class UCAction;
 
 UENUM(BlueprintType)
 enum class EActionType : uint8
@@ -24,18 +25,23 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-		
 
 public:
 	void DoAction();
 
+	void DoSubAction(bool bBegin);
+
+	void OffAllCollsions();
 
 public:
 	UFUNCTION(BlueprintPure)
-		FORCEINLINE UCActionData* GetCurrentActionData() { return DataAssets[(int32)Type]; }
+	FORCEINLINE UCAction* GetCurrentActionData() { return Datas[(int32)Type]; }
 
 	UFUNCTION(BlueprintPure)
-	FORCEINLINE bool IsUnaremdMode() { return Type == EActionType::Unarmed; }
+	FORCEINLINE UCActionData* GetCurrentActionDataAsset() { return DataAssets[(int32)Type]; }
+
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE bool IsUnarmedMode() { return Type == EActionType::Unarmed; }
 
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE bool IsFistMode() { return Type == EActionType::Fist; }
@@ -56,12 +62,25 @@ public:
 	FORCEINLINE bool IsWhirlwindMode() { return Type == EActionType::Whirlwind; }
 
 public:
-	void SetUnaremdMode();
+	UFUNCTION(BlueprintCallable)
+	void SetUnarmedMode();
+
+	UFUNCTION(BlueprintCallable)
 	void SetFistMode();
+
+	UFUNCTION(BlueprintCallable)
 	void SetOneHandMode();
+
+	UFUNCTION(BlueprintCallable)
 	void SetTwoHandMode();
+
+	UFUNCTION(BlueprintCallable)
 	void SetMagicBallMode();
+	
+	UFUNCTION(BlueprintCallable)
 	void SetWarpMode();
+
+	UFUNCTION(BlueprintCallable)
 	void SetWhirlwindMode();
 
 private:
@@ -70,14 +89,16 @@ private:
 
 public:
 	UPROPERTY(BlueprintAssignable)
-		FActionTypeChanged OnActionTypeChanged;
+	FActionTypeChanged OnActionTypeChanged;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "DataAsset")
-		UCActionData* DataAssets[(int32)EActionType::Max];
+	UCActionData* DataAssets[(int32)EActionType::Max];
 
 private:
 	EActionType Type;
 
+	UPROPERTY()
+	UCAction* Datas[(int32)EActionType::Max];
 
 };

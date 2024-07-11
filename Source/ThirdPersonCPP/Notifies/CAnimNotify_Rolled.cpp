@@ -11,7 +11,7 @@ void UCAnimNotify_Rolled::Notify(USkeletalMeshComponent* MeshComp, UAnimSequence
 {
 	Super::Notify(MeshComp, Animation);
 	CheckNull(MeshComp->GetOwner());
-
+	
 	ACPlayer* Player = Cast<ACPlayer>(MeshComp->GetOwner());
 	CheckNull(Player);
 

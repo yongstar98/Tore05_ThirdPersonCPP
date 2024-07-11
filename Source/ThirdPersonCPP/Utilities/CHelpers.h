@@ -33,7 +33,6 @@ public:
 		*OutAsset = Object;
 	}
 
-
 	template<typename T>
 	static void GetClass(TSubclassOf<T>* OutClass, FString InPath)
 	{
@@ -48,7 +47,6 @@ public:
 	{
 		return Cast<T>(InActor->GetComponentByClass(T::StaticClass()));
 	}
-
 
 	template<typename T>
 	static void CreateSceneComponent(AActor* InActor, T** OutComponent, FName InName, USceneComponent* InParent = nullptr)
