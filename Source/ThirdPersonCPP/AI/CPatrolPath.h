@@ -20,11 +20,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-
-
 public:
 	FORCEINLINE USplineComponent* GetSplineComp() { return SplineComp; }
-
 
 private:
 	UPROPERTY(VisibleDefaultsOnly)

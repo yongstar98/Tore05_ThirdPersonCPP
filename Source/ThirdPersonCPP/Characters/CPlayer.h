@@ -15,6 +15,8 @@ class UCStateComponent;
 class UCMontagesComponent;
 class UCActionComponent;
 class UMaterialInstanceDynamic;
+class UPostProcessComponent;
+class UCFeetComponent;
 
 UCLASS()
 class THIRDPERSONCPP_API ACPlayer : public ACharacter, public ICCharacterInterface, public IGenericTeamAgentInterface
@@ -34,6 +36,7 @@ public:
 
 public:
 	void ChangeBodyColor(FLinearColor InColor) override;
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 private:
 	void OnMoveForward(float Axis);
@@ -59,6 +62,12 @@ private:
 	void OnPrimaryAction();
 	void OnSecondaryAction();
 	void OffSecondaryAction();
+
+	void Hitted();
+	void Dead();
+
+	UFUNCTION()
+	void End_Dead();
 
 private:
 	void Begin_Roll();
@@ -94,11 +103,26 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
 	UCActionComponent* ActionComp;
 
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
+		UPostProcessComponent* PostProcessComp;
+
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
+		UCFeetComponent* FeetComp;
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "TeamID")
-		uint8 TeamID;
+	uint8 TeamID;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+		TSubclassOf<UUserWidget> DeadWidgetClass;
 
 private:
 	UMaterialInstanceDynamic* BodyMaterial;
 	UMaterialInstanceDynamic* LogoMaterial;
+
+	float DamageValue;
+	AController* DamageInstigator;
+
+	UPROPERTY()
+		UUserWidget* DeadWidget;
 };

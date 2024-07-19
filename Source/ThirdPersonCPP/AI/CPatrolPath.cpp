@@ -20,7 +20,7 @@ void ACPatrolPath::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 
-	TextRenderComp->SetText(GetActorLabel());
+	TextRenderComp->SetText(GetName());
 
 	SplineComp->SetClosedLoop(bClosedLoop);
 }
@@ -28,7 +28,7 @@ void ACPatrolPath::OnConstruction(const FTransform& Transform)
 void ACPatrolPath::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	TextRenderComp->SetVisibility(false);
 }
 

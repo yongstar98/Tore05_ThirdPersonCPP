@@ -7,7 +7,6 @@ UCBehaviorComponent::UCBehaviorComponent()
 	BehaviorKey = "BehaviorKey";
 	PlayerKey = "PlayerKey";
 	LocationKey = "LocationKey";
-
 }
 
 
@@ -15,13 +14,12 @@ void UCBehaviorComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-
+	
 }
 
 void UCBehaviorComponent::SetBlackboardComp(UBlackboardComponent* InComp)
 {
 	BlackboardComp = InComp;
-	//Todo.. 나머지는 내일..
 }
 
 bool UCBehaviorComponent::IsWaitMode()
@@ -62,7 +60,6 @@ void UCBehaviorComponent::SetWaitMode()
 void UCBehaviorComponent::SetApproachMode()
 {
 	ChangeType(EBehaviorType::Approach);
-
 }
 
 void UCBehaviorComponent::SetActionMode()

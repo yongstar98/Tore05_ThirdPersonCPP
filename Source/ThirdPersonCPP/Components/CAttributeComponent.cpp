@@ -9,7 +9,7 @@ UCAttributeComponent::UCAttributeComponent()
 	WalkSpeeds[(int32)EWalkSpeedType::Sprint] = 600;
 
 	MaxHealth = 100.f;
-
+	
 	bCanMove = true;
 }
 
@@ -50,4 +50,3 @@ void UCAttributeComponent::SetWalkSpeed(EWalkSpeedType InWalkSpeed)
 
 	MovementComp->MaxWalkSpeed = WalkSpeeds[(int32)InWalkSpeed];
 }
-

@@ -5,6 +5,7 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Components/CBehaviorComponent.h"
+#include "Components/CStateComponent.h"
 #include "CEnemy_AI.h"
 #include "CPlayer.h"
 
@@ -13,6 +14,8 @@ ACAIController::ACAIController()
 	PrimaryActorTick.bCanEverTick = true;
 
 	BehaviorRange = 150.f;
+	bDrawRange = true;
+	Segment = 32;
 
 	CHelpers::CreateActorComponent<UBlackboardComponent>(this, &Blackboard, "BlackboardComp");
 	CHelpers::CreateActorComponent<UCBehaviorComponent>(this, &BehaviorComp, "BehaviorComp");
@@ -25,7 +28,7 @@ ACAIController::ACAIController()
 
 	Sight->DetectionByAffiliation.bDetectEnemies = true;
 	Sight->DetectionByAffiliation.bDetectFriendlies = false;
-	Sight->DetectionByAffiliation.bDetectNeutrals = false;
+	Sight->DetectionByAffiliation.bDetectNeutrals= false;
 
 	PerceptionComp->ConfigureSense(*Sight);
 	PerceptionComp->SetDominantSense(Sight->GetSenseImplementation());
@@ -58,6 +61,21 @@ void ACAIController::OnUnPossess()
 void ACAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	FVector Center = OwnerEnemy->GetActorLocation();
+
+	ACPlayer* Player = Cast<ACPlayer>(Blackboard->GetValueAsObject("PlayerKey"));
+	if (Player)
+	{
+		UCStateComponent* StateComp = CHelpers::GetComponent<UCStateComponent>(Player);
+		if (StateComp && StateComp->IsDeadMode())
+		{
+			Blackboard->SetValueAsObject("PlayerKey", nullptr);
+		}
+	}
+
+	CheckFalse(bDrawRange);
+	DrawDebugSphere(GetWorld(), Center, Sight->SightRadius, Segment, FColor::Green);
+	DrawDebugSphere(GetWorld(), Center, BehaviorRange, Segment, FColor::Red);
 }
 
 float ACAIController::GetSightRadius()
@@ -73,7 +91,7 @@ void ACAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 	ACPlayer* Player = nullptr;
 	for (const auto& Actor : PerceivedActors)
 	{
-		Cast<ACPlayer>(Actor);
+		Player = Cast<ACPlayer>(Actor);
 
 		if (Player)
 		{

@@ -13,39 +13,38 @@ enum class EBehaviorType : uint8
 	Wait, Approach, Action, Patrol, Hitted, Escape
 };
 
-UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class THIRDPERSONCPP_API UCBehaviorComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:
+public:	
 	UCBehaviorComponent();
 
 protected:
 	virtual void BeginPlay() override;
-
 
 public:
 	void SetBlackboardComp(UBlackboardComponent* InComp);
 
 public:
 	UFUNCTION(BlueprintPure)
-		bool IsWaitMode();
+	bool IsWaitMode();
 
 	UFUNCTION(BlueprintPure)
-		bool IsApproachMode();
+	bool IsApproachMode();
 
 	UFUNCTION(BlueprintPure)
-		bool IsActionMode();
+	bool IsActionMode();
 
 	UFUNCTION(BlueprintPure)
-		bool IsPatrolMode();
+	bool IsPatrolMode();
 
 	UFUNCTION(BlueprintPure)
-		bool IsHittedMode();
+	bool IsHittedMode();
 
 	UFUNCTION(BlueprintPure)
-		bool IsEscapeMode();
+	bool IsEscapeMode();
 
 public:
 	void SetWaitMode();
@@ -57,7 +56,6 @@ public:
 
 	ACPlayer* GetPlayerKey();
 	FVector GetLocationKey();
-
 
 private:
 	void ChangeType(EBehaviorType InNewType);
@@ -75,6 +73,4 @@ private:
 
 private:
 	UBlackboardComponent* BlackboardComp;
-
-
 };

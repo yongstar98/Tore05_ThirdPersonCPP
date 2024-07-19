@@ -30,24 +30,26 @@ public:
 
 private:
 	UFUNCTION()
-		void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
+	void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly)
 	UAIPerceptionComponent* PerceptionComp;
 
-
 	UPROPERTY(VisibleDefaultsOnly)
 	UCBehaviorComponent* BehaviorComp;
-
 
 private:
 	UPROPERTY(EditAnywhere)
 	float BehaviorRange;
 
+	UPROPERTY(EditAnywhere)
+		bool bDrawRange;
+
+	UPROPERTY(EditAnywhere)
+		int32 Segment;
 private:
 	ACEnemy_AI* OwnerEnemy;
-
+	
 	UAISenseConfig_Sight* Sight;
 };
-

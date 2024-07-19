@@ -24,9 +24,10 @@ private:
 	UBehaviorTree* BehaviorTree;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
-		uint8 TeamID;
+	uint8 TeamID;
 
 private:
 	UPROPERTY(VisibleDefaultsOnly)
 	UCPatrolComponent* PatrolComp;
+	
 };

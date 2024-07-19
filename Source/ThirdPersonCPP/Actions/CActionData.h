@@ -72,8 +72,6 @@ public:
 private:
 	FString MakeActorLable(ACharacter* InOwnerCharacter, FString InMiddleName);
 
-
-
 public:
 	UPROPERTY(EditAnywhere, Category = "Equipment")
 	TSubclassOf<ACEquipment> EquipmentClass;

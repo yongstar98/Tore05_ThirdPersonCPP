@@ -31,7 +31,9 @@ public:
 
 	void DoSubAction(bool bBegin);
 
+	void Abort();
 	void OffAllCollsions();
+	void DestroyAll();
 
 public:
 	UFUNCTION(BlueprintPure)
@@ -76,7 +78,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetMagicBallMode();
-
+	
 	UFUNCTION(BlueprintCallable)
 	void SetWarpMode();
 

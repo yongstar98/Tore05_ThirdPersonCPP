@@ -17,10 +17,10 @@ void UCPatrolComponent::BeginPlay()
 
 bool UCPatrolComponent::GetMoveTo(FVector& OutLoation)
 {
+	OutLoation = GetOwner()->GetActorLocation();
 	CheckFalseResult(IsPathValid(), false);
 
 	OutLoation = PatrolPath->GetSplineComp()->GetLocationAtSplinePoint(Index, ESplineCoordinateSpace::World);
-
 	return true;
 }
 
@@ -30,7 +30,7 @@ void UCPatrolComponent::UpdateNextIndex()
 
 	int32 Count = PatrolPath->GetSplineComp()->GetNumberOfSplinePoints();
 
-	// Reverse
+	//Reverse
 	if (bReverse)
 	{
 		if (Index > 0)
@@ -51,15 +51,13 @@ void UCPatrolComponent::UpdateNextIndex()
 		return;
 	}
 
-	// Forward
-	// ->Not Last Index
+	//Forward
 	if (Index < Count - 1)
 	{
 		Index++;
 		return;
 	}
 
-	
 	if (PatrolPath->GetSplineComp()->IsClosedLoop())
 	{
 		Index = 0;

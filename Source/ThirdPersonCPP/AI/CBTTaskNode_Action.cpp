@@ -32,7 +32,7 @@ EBTNodeResult::Type UCBTTaskNode_Action::ExecuteTask(UBehaviorTreeComponent& Own
 
 	ElapsedTime = 0.f;
 
-	return EBTNodeResult::Succeeded;
+	return EBTNodeResult::InProgress;
 }
 
 void UCBTTaskNode_Action::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)

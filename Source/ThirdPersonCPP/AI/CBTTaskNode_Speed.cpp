@@ -11,7 +11,7 @@ EBTNodeResult::Type UCBTTaskNode_Speed::ExecuteTask(UBehaviorTreeComponent& Owne
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	AAIController* AIC = Cast<AAIController>(OwnerComp.GetOwner());
+	AAIController* AIC =  Cast<AAIController>(OwnerComp.GetOwner());
 	CheckNullResult(AIC, EBTNodeResult::Failed);
 
 	APawn* Pawn = AIC->GetPawn();

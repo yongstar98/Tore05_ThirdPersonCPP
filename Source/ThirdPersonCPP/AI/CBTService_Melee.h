@@ -8,7 +8,6 @@ UCLASS()
 class THIRDPERSONCPP_API UCBTService_Melee : public UBTService
 {
 	GENERATED_BODY()
-	
 
 public:
 	UCBTService_Melee();

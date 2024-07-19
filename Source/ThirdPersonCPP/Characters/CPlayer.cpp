@@ -5,10 +5,14 @@
 #include "Camera/CameraComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInstanceConstant.h"
+#include "Blueprint/UserWidget.h"
 #include "Components/CAttributeComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/PostProcessComponent.h"
 #include "Components/COptionComponent.h"
 #include "Components/CMontagesComponent.h"
 #include "Components/CActionComponent.h"
+#include "Components/CFeetComponent.h"
 #include "Actions/CActionData.h"
 #include "Actions/CAction.h"
 
@@ -20,6 +24,7 @@ ACPlayer::ACPlayer()
 	//Create Scene Component
 	CHelpers::CreateSceneComponent(this, &SpringArmComp, "SpringArmComp", GetMesh());
 	CHelpers::CreateSceneComponent(this, &CameraComp, "CameraComp", SpringArmComp);
+	CHelpers::CreateSceneComponent(this, &PostProcessComp, "PostProcessComp", RootComponent);
 
 	//Create Actor Component
 	CHelpers::CreateActorComponent(this, &ActionComp, "ActionComp");
@@ -27,6 +32,7 @@ ACPlayer::ACPlayer()
 	CHelpers::CreateActorComponent(this, &AttributeComp, "AttributeComp");
 	CHelpers::CreateActorComponent(this, &OptionComp, "OptionComp");
 	CHelpers::CreateActorComponent(this, &StateComp, "StateComp");
+	CHelpers::CreateActorComponent(this, &FeetComp, "FeetComp");
 
 	//Component Settings
 	//-> MeshComp
@@ -40,7 +46,7 @@ ACPlayer::ACPlayer()
 	TSubclassOf<UAnimInstance> AnimInstanceClass;
 	CHelpers::GetClass<UAnimInstance>(&AnimInstanceClass, "/Game/Player/ABP_CPlayer");
 	GetMesh()->SetAnimInstanceClass(AnimInstanceClass);
-
+	
 	//-> SpringArmComp
 	SpringArmComp->SetRelativeLocation(FVector(0, 0, 140));
 	SpringArmComp->SetRelativeRotation(FRotator(0, 90, 0));
@@ -53,6 +59,13 @@ ACPlayer::ACPlayer()
 	GetCharacterMovement()->MaxWalkSpeed = AttributeComp->GetSprintSpeed();
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0, 720, 0);
+
+	//->PostProcess
+	PostProcessComp->Settings.bOverride_VignetteIntensity = false;
+	PostProcessComp->Settings.VignetteIntensity = 2.f;
+
+	PostProcessComp->Settings.bOverride_DepthOfFieldFocalDistance = false;
+	PostProcessComp->Settings.DepthOfFieldFocalDistance = 2.f;
 }
 
 void ACPlayer::BeginPlay()
@@ -73,7 +86,7 @@ void ACPlayer::BeginPlay()
 
 	GetMesh()->SetMaterial(0, BodyMaterial);
 	GetMesh()->SetMaterial(1, LogoMaterial);
-
+	
 
 	ActionComp->SetUnarmedMode();
 }
@@ -88,6 +101,25 @@ void ACPlayer::ChangeBodyColor(FLinearColor InColor)
 {
 	BodyMaterial->SetVectorParameterValue("BodyColor", InColor);
 	LogoMaterial->SetVectorParameterValue("BodyColor", InColor);
+}
+
+float ACPlayer::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	DamageValue = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	DamageInstigator = EventInstigator;
+
+	ActionComp->Abort();
+	AttributeComp->DecreaseHealth(Damage);
+
+	if (AttributeComp->GetCurrentHealth() <= 0.f)
+	{
+		StateComp->SetDeadMode();
+		return 0.f;
+	}
+
+	StateComp->SetHittedMode();
+
+	return DamageValue;
 }
 
 void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -142,7 +174,7 @@ void ACPlayer::OnMoveRight(float Axis)
 
 void ACPlayer::OnTurn(float Axis)
 {
-	float Rate = Axis * OptionComp->GetMouseXRate() * GetWorld()->GetDeltaSeconds();
+	float Rate = Axis* OptionComp->GetMouseXRate()* GetWorld()->GetDeltaSeconds();
 
 	AddControllerYawInput(Rate);
 }
@@ -243,6 +275,57 @@ void ACPlayer::OffSecondaryAction()
 	ActionComp->DoSubAction(false);
 }
 
+void ACPlayer::Hitted()
+{
+	MontagesComp->PlayHitted();
+	AttributeComp->SetStop();
+}
+
+void ACPlayer::Dead()
+{
+	//Ragdoll
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetCollisionProfileName("Ragdoll");
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->DisableMovement();
+
+	//Add Impulse
+	FVector Start = GetActorLocation();
+	FVector Target = DamageInstigator->GetPawn()->GetActorLocation();
+	FVector Direction = Start - Target;
+	Direction.Normalize();
+	GetMesh()->AddImpulseAtLocation(Direction * 3000 * DamageValue, Start);
+
+	//Off ActionComp Disable
+	ActionComp->OffAllCollsions();
+	DisableInput(GetController<APlayerController>());
+
+	//Enable PostProcess
+	PostProcessComp->Settings.bOverride_VignetteIntensity = true;
+	PostProcessComp->Settings.bOverride_DepthOfFieldFocalDistance = true;
+	
+
+	//Timer Ecent
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.25f);
+	UKismetSystemLibrary::K2_SetTimer(this, "End_Dead", 1.f, false);
+}
+
+void ACPlayer::End_Dead()
+{
+	ensure(DeadWidgetClass);
+
+	APlayerController* PC = GetController<APlayerController>();
+	CheckNull(PC);
+
+	DeadWidget= CreateWidget<UUserWidget>(PC, DeadWidgetClass);
+	DeadWidget->AddToViewport();
+
+	PC->bShowMouseCursor = true;
+	PC->SetInputMode(FInputModeUIOnly());
+
+	ActionComp->DestroyAll();
+}
+
 void ACPlayer::Begin_Roll()
 {
 	bUseControllerRotationYaw = false;
@@ -259,7 +342,7 @@ void ACPlayer::Begin_Roll()
 	{
 		Target = Start + GetVelocity().GetSafeNormal2D();
 	}
-
+	
 	FRotator ForceRotation = UKismetMathLibrary::FindLookAtRotation(Start, Target);
 	SetActorRotation(ForceRotation);
 
@@ -310,16 +393,29 @@ void ACPlayer::OnStateTypeChanged(EStateType InPrevType, EStateType InNewType)
 {
 	switch (InNewType)
 	{
-	case EStateType::Roll:
-	{
-		Begin_Roll();
-	}
-	break;
+		case EStateType::Roll:
+		{
+			Begin_Roll();
+		}
+		break;
+		
+		case EStateType::Backstep:
+		{
+			Begin_Backstep();
+		}
+		break;
 
-	case EStateType::Backstep:
-	{
-		Begin_Backstep();
-	}
-	break;
+		case EStateType::Hitted:
+		{
+			Hitted();
+		}
+		break;
+
+		case EStateType::Dead:
+		{
+			Dead();
+		}
+		break;
 	}
 }
+
